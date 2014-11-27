@@ -1,0 +1,71 @@
+  public static class IntExtensions
+    {
+        /// <summary>
+        /// Get the digital root of a number (http://en.wikipedia.org/wiki/Digital_root)
+        /// </summary>
+        /// <param name="t"></param>
+        /// <returns>Digital root</returns>
+        public static int DigitalRoot(this int t)
+        {
+            int val = t;
+            do
+            {
+                val = SumDigits(val);
+            } while (val > 9);
+
+            return val;
+        }
+
+        /// <summary>
+        /// Sum the digits in the provided integer
+        /// </summary>
+        /// <param name="t">number to sum</param>
+        /// <returns>Summed return</returns>
+        private static int SumDigits (this int t)
+        {
+            //the -48 converts the char representation of an integer to the integer 
+            //it represents e.g. 48 = 0 etc
+            return t.ToString().ToCharArray().Select(i=> i - 48).Sum();
+        }
+
+        public static int MinPermutation(this int t)
+        {
+            
+            List<int> l = t.ToString().ToCharArray()
+                     .Select(i => i - 48)
+                     .ToList();
+
+            //order by smallest first, pushing a 0 value to the end of the list
+            l.Sort((a, b) => (a == 0 ? 10 : a).CompareTo(b == 0 ? 10 : b));
+
+            //add the list componentns together to form one number
+            int len = t.ToString().Length - 1;
+            return (int)l.Select((val, ind) => Math.Pow(10, len - ind) * val).Sum();   
+
+            /*
+                The method below does the same as the above return, just playing around
+                with different methods. A possible performance hit re-ordering a list?                
+             */
+            //l.Reverse();
+            //return (int) l.Select((val, ind) => Math.Pow(10,  ind) * val).Sum();   
+        }
+
+        /// <summary>
+        /// Get the maximum value formed from permuting the individual digits
+        /// </summary>
+        /// <param name="t">Value to permute</param>
+        /// <returns>Max value</returns>
+        /// <remarks>Doesn't check if the number produced has overflowed, e.g. rearranging the upper limit of an int32 (2147483647) will produce an overflow</remarks>
+        public static int MaxPermutation(this int t)
+        {
+            int len = t.ToString().Length - 1;
+            List<int> l = t.ToString().ToCharArray()
+                     .Select(i => i - 48)
+                     .ToList();
+
+            //order descending, largest first
+            l.Sort((a, b) => b.CompareTo(a));
+
+            return (int)l.Select((val, ind) => Math.Pow(10, len - ind) * val).Sum();
+        }
+    } 

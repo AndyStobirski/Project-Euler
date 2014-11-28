@@ -1,0 +1,7 @@
+//Note: this solution uses the Reverse method of the Integer Extension Methods contained in this Repository
+
+List<int> nums = Enumerable.Range(100, 900).ToList();
+int answer = nums.Select(x => nums.Select(y => x * y))
+                .SelectMany(x => x)
+                .Where(x => x == x.Reverse())
+                .Max();

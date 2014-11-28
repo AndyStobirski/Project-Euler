@@ -1,53 +1,57 @@
   public static class IntExtensions
     {
         /// <summary>
-        /// Get the digital root of a number (http://en.wikipedia.org/wiki/Digital_root)
+        /// Returns the digital root
         /// </summary>
-        /// <param name="t"></param>
+        /// <param name="t">Int to examine</param>
         /// <returns>Digital root</returns>
         public static int DigitalRoot(this int t)
         {
             int val = t;
             do
             {
-                val = SumDigits(val);
+                val = IntToList(t).Aggregate((sum, i) => sum + i);
             } while (val > 9);
 
             return val;
         }
 
         /// <summary>
-        /// Sum the digits in the provided integer
+        /// Produce a list of the number's component digits
         /// </summary>
-        /// <param name="t">number to sum</param>
-        /// <returns>Summed return</returns>
-        private static int SumDigits (this int t)
+        /// <param name="t">Integer to convert</param>
+        /// <returns>Generic list containing the number's component digits</returns>
+        private static IEnumerable<int> IntToList(this int t)
         {
-            //the -48 converts the char representation of an integer to the integer 
-            //it represents e.g. 48 = 0 etc
-            return t.ToString().ToCharArray().Select(i=> i - 48).Sum();
+            return t.ToString().Select(digit => int.Parse(digit.ToString()));
         }
 
+        /// <summary>
+        /// Rearrange the integer to form a new int of the same length
+        /// but smallest possible minimum value
+        /// </summary>
+        /// <param name="t">Int to rearrange</param>
+        /// <returns>Min rearrangement</returns>
         public static int MinPermutation(this int t)
         {
-            
-            List<int> l = t.ToString().ToCharArray()
-                     .Select(i => i - 48)
-                     .ToList();
+            List<int> l = IntToList(t).ToList();
+           
+            l.Sort((a, b) => a.CompareTo(b));
 
-            //order by smallest first, pushing a 0 value to the end of the list
-            l.Sort((a, b) => (a == 0 ? 10 : a).CompareTo(b == 0 ? 10 : b));
+            //above sort will push any 0s to the start of the list
+            //and we want the number to begin with the smallest number
+            //greater than 0
+            if (l.First() == 0)
+                l.Reverse   (
+                                0
+                                , l.TakeWhile(i => i == 0).Select((val, ind) => ind).Last() + 2
+                            );
+
+            
 
             //add the list componentns together to form one number
-            int len = t.ToString().Length - 1;
-            return (int)l.Select((val, ind) => Math.Pow(10, len - ind) * val).Sum();   
-
-            /*
-                The method below does the same as the above return, just playing around
-                with different methods. A possible performance hit re-ordering a list?                
-             */
-            //l.Reverse();
-            //return (int) l.Select((val, ind) => Math.Pow(10,  ind) * val).Sum();   
+            l.Reverse();
+            return (int)l.Select((val, ind) => Math.Pow(10, ind) * val).Sum();   
         }
 
         /// <summary>
@@ -58,14 +62,12 @@
         /// <remarks>Doesn't check if the number produced has overflowed, e.g. rearranging the upper limit of an int32 (2147483647) will produce an overflow</remarks>
         public static int MaxPermutation(this int t)
         {
-            int len = t.ToString().Length - 1;
-            List<int> l = t.ToString().ToCharArray()
-                     .Select(i => i - 48)
-                     .ToList();
+            List<int> l = IntToList(t).ToList();
 
             //order descending, largest first
             l.Sort((a, b) => b.CompareTo(a));
 
-            return (int)l.Select((val, ind) => Math.Pow(10, len - ind) * val).Sum();
+            l.Reverse();
+            return (int)l.Select((val, ind) => Math.Pow(10, ind) * val).Sum();  
         }
     } 

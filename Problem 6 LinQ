@@ -1,0 +1,3 @@
+IEnumerable<int> range = Enumerable.Range(1, 100);
+int answer = (int)Math.Pow(range.Sum(), 2)
+                - range.Select(i => i * i).Sum();

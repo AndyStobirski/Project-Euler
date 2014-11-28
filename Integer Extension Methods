@@ -70,4 +70,15 @@
             l.Reverse();
             return (int)l.Select((val, ind) => Math.Pow(10, ind) * val).Sum();  
         }
+        
+                /// <summary>
+        /// Reverse the provided integer
+        /// </summary>
+        /// <param name="t">Integer to reverse</param>
+        /// <returns>Reversed integer</returns>
+        public static int Reverse(this int t)
+        {
+            List<int> l = IntToList(t).ToList();            
+            return (int)l.Select((val, ind) => Math.Pow(10, ind) * val).Sum();   
+        }
     } 

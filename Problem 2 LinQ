@@ -1,0 +1,4 @@
+  List<int> fib = new List<int>() { 1, 2 };
+  while (fib.Last() < 4000000)
+      fib.Add(fib.Skip(fib.Count() - 2).Sum());
+  int answer = fib.Where(i => i % 2 == 0).Sum();
